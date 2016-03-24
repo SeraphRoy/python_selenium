@@ -1,8 +1,7 @@
 from selenium import webdriver
 f = open('.password', 'r')
 readPassword = f.read()
-
-browser = webdriver.Chrome()
+count = 5
 is154NotSuccessful = True
 is165NotSuccessful = True
 
@@ -16,7 +15,11 @@ def SwitchTo(input):
     else:
         return True
 
+browser = webdriver.Chrome()
 while 1 and (is154NotSuccessful or is165NotSuccessful):
+    if count == 0:
+        browser = webdriver.Chrome()
+        count = 5
     browser.get('https://my.sa.ucsb.edu/gold/login.aspx')
     NetId = browser.find_element_by_id('pageContent_userNameText')
     password = browser.find_element_by_id('pageContent_passwordText')
@@ -40,4 +43,7 @@ while 1 and (is154NotSuccessful or is165NotSuccessful):
 
     logout = browser.find_element_by_xpath("//*[@id='headerTable']/tbody/tr[2]/td[2]/a")
     logout.click()
+    count -= 1
+    if count == 0:
+        browser.close()
 
