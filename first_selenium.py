@@ -4,6 +4,7 @@ readPassword = f.read()
 count = 5
 is154NotSuccessful = True
 is165NotSuccessful = True
+is138NotSuccessful = True
 
 def SwitchTo(input):
     SwitchTo = browser.find_element_by_id(input)
@@ -16,7 +17,7 @@ def SwitchTo(input):
         return True
 
 browser = webdriver.Chrome()
-while 1 and (is154NotSuccessful or is165NotSuccessful):
+while 1 and (is154NotSuccessful or is165NotSuccessful or is138NotSuccessful):
     if count == 0:
         browser = webdriver.Chrome()
         count = 5
@@ -40,6 +41,13 @@ while 1 and (is154NotSuccessful or is165NotSuccessful):
         Switch165 = browser.find_element_by_id('pageContent_CourseList_SwitchCourseButton_2')
         Switch165.click()
         is165NotSuccessful = SwitchTo('pageContent_ClassScheduleUC_dl_coursegroup_PrimarySections_0_SecondarySections_0_SwitchLinkSecondaryAlt_1')
+
+    if is138NotSuccessful:
+        MyClassSchedule = browser.find_element_by_xpath("//*[@id='ctl05']")
+        MyClassSchedule.click()
+        Switch138 = browser.find_element_by_id('pageContent_CourseList_SwitchCourseButton_0')
+        Switch138.click()
+        is138NotSuccessful = SwitchTo('pageContent_ClassScheduleUC_dl_coursegroup_PrimarySections_0_SecondarySections_0_SwitchLinkSecondaryAlt_1')
 
     logout = browser.find_element_by_xpath("//*[@id='headerTable']/tbody/tr[2]/td[2]/a")
     logout.click()
