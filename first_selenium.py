@@ -1,23 +1,17 @@
 from selenium import webdriver
+import smtplib
 f = open('.password', 'r')
+emailPW = open('.email', 'r')
 readPassword = f.read()
+emailPassword = emailPW.read()
+smtpAccount = "royxagain@gmail.com"
+sender = "royxagain@gmail.com"
+receiver = "royxagain@gmail.com"
 count = 5
-is154NotSuccessful = True
-is165NotSuccessful = True
-is138NotSuccessful = True
-
-def SwitchTo(input):
-    SwitchTo = browser.find_element_by_id(input)
-    SwitchTo.click()
-    try:
-        Error =  browser.find_element_by_id('pageContent_ClassScheduleUC_ErrorMessageTable')
-    except NoSuchElementException:
-        return False
-    else:
-        return True
+spaceLimit = 10
 
 browser = webdriver.Chrome()
-while 1 and (is154NotSuccessful or is165NotSuccessful or is138NotSuccessful):
+while 1:
     if count == 0:
         browser = webdriver.Chrome()
         count = 5
@@ -28,26 +22,23 @@ while 1 and (is154NotSuccessful or is165NotSuccessful or is138NotSuccessful):
     NetId.send_keys('yanxi')
     password.send_keys(readPassword)
     login.click()
-    MyClassSchedule = browser.find_element_by_xpath("//*[@id='ctl05']")
-    MyClassSchedule.click()
-    if is154NotSuccessful:
-        Switch154 = browser.find_element_by_id('pageContent_CourseList_SwitchCourseButton_1')
-        Switch154.click()
-        is154NotSuccessful = SwitchTo('pageContent_ClassScheduleUC_dl_coursegroup_PrimarySections_0_SecondarySections_0_SwitchLinkSecondary_2') and SwitchTo('pageContent_ClassScheduleUC_dl_coursegroup_PrimarySections_0_SecondarySections_0_SwitchLinkSecondaryAlt_3')
-
-    if is165NotSuccessful:
-        MyClassSchedule = browser.find_element_by_xpath("//*[@id='ctl05']")
-        MyClassSchedule.click()
-        Switch165 = browser.find_element_by_id('pageContent_CourseList_SwitchCourseButton_2')
-        Switch165.click()
-        is165NotSuccessful = SwitchTo('pageContent_ClassScheduleUC_dl_coursegroup_PrimarySections_0_SecondarySections_0_SwitchLinkSecondaryAlt_1')
-
-    if is138NotSuccessful:
-        MyClassSchedule = browser.find_element_by_xpath("//*[@id='ctl05']")
-        MyClassSchedule.click()
-        Switch138 = browser.find_element_by_id('pageContent_CourseList_SwitchCourseButton_0')
-        Switch138.click()
-        is138NotSuccessful = SwitchTo('pageContent_ClassScheduleUC_dl_coursegroup_PrimarySections_0_SecondarySections_0_SwitchLinkSecondaryAlt_1')
+    FindCourse = browser.find_element_by_xpath("//*[@id='ctl07']")
+    FindCourse.click()
+    browser.find_element_by_xpath("//*[@id='pageContent_quarterDropDown']/option[1]").click()
+    browser.find_element_by_xpath("//*[@id='pageContent_subjectAreaDropDown']/option[18]").click()
+    browser.find_element_by_id('pageContent_searchButton').click()
+    CS160Space = browser.find_element_by_xpath("//*[@id='pageContent_CourseList_PrimarySections_11']/tbody/tr/td/table/tbody/tr[1]/td[7]").text
+    space = "CS160Space"
+    if int(CS160Space) < spaceLimit:
+        server = smtplib.SMTP('smtp.gmail.com', 587)
+        server.ehlo()
+        server.starttls()
+        #server.ehlo()
+        server.login(smtpAccount, emailPassword)
+        msg = "\nHello! " + space + " is less than" + str(spaceLimit)# The /n separates the message from the headers (which we ignore for this example)
+        server.sendmail(sender,receiver, msg)
+        browser.close()
+        break
 
     logout = browser.find_element_by_xpath("//*[@id='headerTable']/tbody/tr[2]/td[2]/a")
     logout.click()
